@@ -4,8 +4,9 @@
 #include <QUdpSocket>
 #include <QNetworkDatagram>
 #include <QDateTime>
+#include <QMetaObject>
 
-
+#define BIND_PORT_2 1012
 #define BIND_PORT 12345
 #define LOCAL_HOST 127.0.0.1
 
@@ -32,6 +33,7 @@ private:
     QByteArray textByte;
     QHostAddress senderAddress;
 signals:
+
     void sig_sendTimeToGUI(QDateTime data);
     void sig_sendTimeTEXT (QByteArray data, QHostAddress senderAddress);
 };

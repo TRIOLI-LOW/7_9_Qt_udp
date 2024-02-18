@@ -67,7 +67,7 @@ void MainWindow::on_pb_start_clicked()
 
 void MainWindow::DisplayText(QByteArray data, QHostAddress senderAddress)
 {
-
+    qDebug()<< "DisplayText &&&";
     ui->te_result->setText(QString("Принято сообщение от адреса %1, размер сообщения(%2 байт) %3")
                                     .arg(senderAddress.toString())
                                     .arg(data.size())

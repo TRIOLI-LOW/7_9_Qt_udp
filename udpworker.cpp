@@ -20,7 +20,7 @@ void UDPworker::InitSocket()
      * Соединяем присваиваем адрес и порт серверу и соединяем функцию
      * обраотчик принятых пакетов с сокетом
      */
-    serviceUdpSocket->bind(QHostAddress::LocalHost, BIND_PORT);
+    serviceUdpSocket->bind(QHostAddress::LocalHost, BIND_PORT_2);
 
     textUdpSocket ->bind(QHostAddress::LocalHost, BIND_PORT);
 
@@ -63,9 +63,10 @@ void UDPworker::ReadDatagramText(QNetworkDatagram datagram)
     QByteArray data;
     data = datagram.data();
     senderAddress = datagram.senderAddress();
-    qDebug() << data << "qqqqq";
+    qDebug() << data << "__________" << senderAddress;
 
-    emit sig_sendTimeTEXT (data, senderAddress);
+    emit sig_sendTimeTEXT(data, senderAddress);
+
 
 }
 /*!
@@ -77,7 +78,7 @@ void UDPworker::SendDatagram(QByteArray data)
      *  Отправляем данные на localhost и задефайненный порт
      */
 
-    serviceUdpSocket->writeDatagram(data, QHostAddress::LocalHost, BIND_PORT);
+    serviceUdpSocket->writeDatagram(data, QHostAddress::LocalHost, BIND_PORT_2);
 }
 void UDPworker::SendText(QByteArray data)
 {
@@ -103,7 +104,8 @@ void UDPworker::readPendingText( void )
     qDebug() << "Read pending for textUdpSocket";
 
     while (textUdpSocket->hasPendingDatagrams()){
-         QNetworkDatagram datagram = textUdpSocket->receiveDatagram();
-         ReadDatagramText(datagram);
-     };
+         QNetworkDatagram datagram2 = textUdpSocket->receiveDatagram();
+         ReadDatagramText(datagram2);
+     }
+    qDebug() << " Vihod iz cikla";
 }
