@@ -9,8 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     udpWorker = new UDPworker(this);
     udpWorker->InitSocket();
-    udpWorkerTEXT = new UDPworker(this);
-    udpWorkerTEXT->InitSocket();
+
+    connect(udpWorker, &UDPworker::sig_sendTimeTEXT, this, &MainWindow::DisplayText);
 
     connect(udpWorker, &UDPworker::sig_sendTimeToGUI, this, &MainWindow::DisplayTime);
 
@@ -22,25 +22,31 @@ MainWindow::MainWindow(QWidget *parent)
         QDateTime dateTime = QDateTime::currentDateTime();
 
         QByteArray dataToSend;
+
         QDataStream outStr(&dataToSend, QIODevice::WriteOnly);
 
         outStr << dateTime;
-
+        qDebug() << " data"<< dataToSend;
         udpWorker->SendDatagram(dataToSend);
+        qDebug() << " data"<< dataToSend;
         timer->start(TIMER_DELAY);
     });
 
-    connect(udpWorkerTEXT, &UDPworker::sig_sendTimeTEXT, this, &MainWindow::DisplayText);
 
-     connect(ui->pb_sendDate,&QPushButton::clicked,this,[&]{
+    connect(ui->pb_sendDate, &QPushButton::clicked, this, [&] {
+        if (!strReceived.isEmpty()) {
 
-            if(strReceived.isEmpty() == false){
+            QByteArray TextToSend;
+            qDebug() << "Text to send: " << strReceived;
 
-            QDataStream outStr1(&strReceived, QIODevice::WriteOnly);
+            QDataStream outStr1(&TextToSend, QIODevice::WriteOnly);
             outStr1 << strReceived;
-            udpWorkerTEXT->SendText(strReceived) ;}
 
+            udpWorker->SendText(TextToSend);
+        }
     });
+
+
 
 
 
@@ -68,7 +74,7 @@ void MainWindow::on_pb_start_clicked()
 void MainWindow::DisplayText(QByteArray data, QHostAddress senderAddress)
 {
     qDebug()<< "DisplayText &&&";
-    ui->te_result->setText(QString("Принято сообщение от адреса %1, размер сообщения(%2 байт) %3")
+    ui->te_result->setText(QString("Принято сообщение от адреса %1, размер сообщения(%2 байт), %3")
                                     .arg(senderAddress.toString())
                                     .arg(data.size())
                                     .arg(QString(data)));

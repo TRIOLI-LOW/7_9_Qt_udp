@@ -84,6 +84,8 @@ void UDPworker::SendText(QByteArray data)
 {
      qDebug() << "SendText";
     textUdpSocket -> writeDatagram(data, QHostAddress::LocalHost, BIND_PORT);
+
+    qDebug() << "writeDatagram" ;
 }
 
 /*!
